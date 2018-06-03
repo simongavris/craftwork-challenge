@@ -3,15 +3,12 @@ package com.simongavris.taskmanagement.controller;
 import com.simongavris.taskmanagement.model.Task;
 import com.simongavris.taskmanagement.model.TaskQueue;
 import com.simongavris.taskmanagement.model.dto.TaskDto;
+import com.simongavris.taskmanagement.persistence.TaskRepository;
 import com.simongavris.taskmanagement.util.Priority;
 import com.simongavris.taskmanagement.util.Status;
 import com.simongavris.taskmanagement.util.TaskNotFoundException;
-import com.simongavris.taskmanagement.persistence.TaskRepository;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,16 +31,14 @@ public class TaskController {
     //fetch all tasks(ordered)
     @GetMapping("/tasks")
     public List<TaskDto> getAllTasks(){
-        //TaskQueue.getInstance().addAll(taskRepository.findAll(new Sort(Sort.Direction.ASC, "queueId")));
-        List<Task> tasks = taskRepository.findAll();//TaskQueue.getInstance();
-        return tasks.stream().map(this::convertToDto).collect(Collectors.toList());
+        return TaskQueue.getInstance().stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
 
     //fetch a single task
     @GetMapping("tasks/{uuid}")
     public TaskDto getTaskByUuid(@PathVariable(value ="uuid") UUID uuid){
-        return convertToDto(taskRepository.findByUuid(uuid).orElseThrow(() -> new TaskNotFoundException(uuid)));
+        return convertToDto(TaskQueue.getInstance().findByUuid(uuid).orElseThrow(() -> new TaskNotFoundException(uuid)));
     }
 
 
@@ -59,17 +54,19 @@ public class TaskController {
             taskDto.setStatus(Status.OPEN);
         taskDto.setUuid(UUID.randomUUID());
 
-
-        return convertToDto(taskRepository.save(convertToEntity(taskDto)));
+        Task t = convertToEntity(taskDto);
+        taskRepository.save(t);
+        TaskQueue.getInstance().add(t);
+        return convertToDto(t);
     }
 
 
     //update a single task
     @PutMapping("/tasks/{uuid}")
     public TaskDto updateTask(@PathVariable(value = "uuid") UUID uuid, @Valid @RequestBody TaskDto taskDto){
-        Task t = taskRepository.findByUuid(uuid).orElseThrow(() -> new TaskNotFoundException(uuid));
+        Task t = TaskQueue.getInstance().findByUuid(uuid).orElseThrow(() -> new TaskNotFoundException(uuid));
 
-        //dont override values if not wanted
+        //dont override values if not wanted todo: maybe check for empty strings too
         if(taskDto.getTitle() != null)
             t.setTitle(taskDto.getTitle());
         if(taskDto.getDescription() != null)
@@ -78,26 +75,20 @@ public class TaskController {
             t.setPriority(taskDto.getPriority());
         if(taskDto.getStatus() != null)
             t.setStatus(taskDto.getStatus());
-         return convertToDto(taskRepository.save(t));
+
+
+        return convertToDto(taskRepository.save(t));
     }
 
     //delete a single task
     @DeleteMapping("/tasks/{uuid}")
     public ResponseEntity<?> deleteTask(@PathVariable(value = "uuid") UUID uuid){
         Task t = taskRepository.findByUuid(uuid).orElseThrow(()-> new TaskNotFoundException(uuid));
-        //TaskQueue.getInstance().remove(t.getUuid());
+        TaskQueue.getInstance().remove(t.getUuid());
         taskRepository.delete(t);
         return ResponseEntity.ok().build();
     }
 
-    public void prepeareQueue(){
-        try {
-            TaskQueue.getInstance().addAll(taskRepository.findAll(new Sort(Sort.Direction.ASC, "id")));
-        }catch(NullPointerException e){
-            //this means that the database is empty hence no data.
-            e.printStackTrace();
-        }
-    }
 
     private TaskDto convertToDto(Task task){
         return modelMapper.map(task, TaskDto.class);

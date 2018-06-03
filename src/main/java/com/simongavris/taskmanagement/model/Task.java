@@ -1,16 +1,13 @@
 package com.simongavris.taskmanagement.model;
 
 
-
 import com.simongavris.taskmanagement.util.Priority;
 import com.simongavris.taskmanagement.util.Status;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.UUID;
@@ -58,7 +55,6 @@ public class Task {
 
 
     public Task(){
-        TaskQueue.getInstance().add(this);
         this.uuid = UUID.randomUUID();
     }
 
@@ -164,6 +160,11 @@ public class Task {
     public void setDescription(String description) {
         this.description = description;
         this.updatedAt = new Date();
+    }
+
+    public String toString() {
+        return "Id: " + this.id +
+                "\nTitle: " + this.title;
     }
 
 }

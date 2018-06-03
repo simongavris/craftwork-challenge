@@ -20,4 +20,5 @@ public interface TaskRepository extends JpaRepository<Task, Integer>{
      */
     Optional<Task> findByUuid(UUID uuid);
 
+
 }
