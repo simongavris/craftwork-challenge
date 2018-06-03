@@ -9,32 +9,31 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api")
 public class TaskController {
 
     @Autowired
     TaskRepository taskRepository;
 
     //fetch all tasks(ordered)
-    @GetMapping("/tasks")
+    @GetMapping("/")
     public List<Task> getAllTasks(){
         return taskRepository.findAll();
     }
 
     //fetch a single task
-    @GetMapping("/tasks/{id}")
+    @GetMapping("/{id}")
     public Task getTaskById(@PathVariable(value = "id") UUID  id){
         return taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
     }
 
     //create a single task
-    @PostMapping("/tasks")
+    @PostMapping("/")
     public Task createTask(@Valid @RequestBody Task task){
         return taskRepository.save(task);
     }
 
     //update a single task
-    @PutMapping("/tasks/{id}")
+    @PutMapping("/{id}")
     public Task updateTask(@PathVariable(value = "id") UUID id, @Valid @RequestBody Task task){
         Task updatedTask = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
         updatedTask.setTitle(task.getTitle());
@@ -44,7 +43,7 @@ public class TaskController {
     }
 
     //delete a single task
-    @DeleteMapping("/tasks/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTask(@PathVariable(value = "id") UUID id){
         taskRepository.delete(taskRepository.findById(id).orElseThrow(()-> new TaskNotFoundException(id)));
 
