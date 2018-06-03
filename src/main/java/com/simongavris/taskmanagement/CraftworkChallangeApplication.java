@@ -8,7 +8,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 public class CraftworkChallangeApplication {
 
+
+
+
 	public static void main(String[] args) {
 		SpringApplication.run(CraftworkChallangeApplication.class, args);
+		//(new TaskController()).prepeareQueue();
 	}
 }

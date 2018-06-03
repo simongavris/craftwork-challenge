@@ -1,4 +1,4 @@
-package com.simongavris.taskmanagement;
+package com.simongavris.taskmanagement.util;
 
 public enum Priority {
     HIGH(3),

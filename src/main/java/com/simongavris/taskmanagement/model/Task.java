@@ -1,8 +1,9 @@
-package com.simongavris.taskmanagement;
+package com.simongavris.taskmanagement.model;
 
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.simongavris.taskmanagement.util.Priority;
+import com.simongavris.taskmanagement.util.Status;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -10,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.UUID;
 
@@ -29,7 +31,7 @@ public class Task {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @NotBlank
+    @NotNull
     private String title;
 
     @Column(nullable = false, updatable = false)
@@ -48,8 +50,17 @@ public class Task {
 
     private Status status = Status.OPEN;
 
+    private String description;
 
-    private String description = "";
+    private int queueId = 0;
+
+    public Task(){
+        System.out.println("Constructor called");
+        System.out.println(TaskQueue.getInstance().size());
+        this.queueId = TaskQueue.getInstance().size() +1;
+        TaskQueue.getInstance().add(this);
+    }
+
 
     //Getter:
     public UUID getId() {
@@ -72,13 +83,51 @@ public class Task {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-        this.updatedAt = new Date();
+    public Priority getPriority() {
+        return priority;
     }
+
+
+    public Status getStatus() {
+        return status;
+    }
+
 
     public String getDescription() {
         return description;
+    }
+
+    public int getQueueId() {
+        return queueId;
+    }
+
+
+
+
+    //Setter:
+
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+        this.updatedAt = new Date();
+    }
+
+
+    public void setStatus(Status status) {
+        if(status != null){
+            if (status.equals(Status.OPEN) && this.resolvedAt != null)
+                this.resolvedAt = null;
+            if (status.equals(Status.DONE))
+                this.resolvedAt = new Date();
+
+            this.status = status;
+            this.updatedAt = new Date();
+        }
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+        this.updatedAt = new Date();
     }
 
     public void setDescription(String description) {
@@ -86,29 +135,8 @@ public class Task {
         this.updatedAt = new Date();
     }
 
-    //Setter:
-
-    public Priority getPriority() {
-        return priority;
-    }
-
-    public void setPriority(Priority priority) {
-        this.priority = priority;
-        this.updatedAt = new Date();
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        if (status.equals(Status.OPEN) && this.resolvedAt != null)
-            this.resolvedAt = null;
-        if (status.equals(Status.DONE))
-            this.resolvedAt = new Date();
-
-        this.status = status;
-        this.updatedAt = new Date();
+    public void setQueueId(int queueId) {
+        this.queueId = queueId;
     }
 
 }
