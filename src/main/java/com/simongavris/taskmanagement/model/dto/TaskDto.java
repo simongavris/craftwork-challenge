@@ -15,8 +15,8 @@ import java.util.UUID;
 
 
 public class TaskDto {
-    @Id
-    private UUID id;
+
+    private UUID uuid;
 
     private String title;
 
@@ -34,21 +34,11 @@ public class TaskDto {
 
     private String description;
 
-    private int queueId;
 
 
 
 
 
-
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;
@@ -98,11 +88,11 @@ public class TaskDto {
         this.description = description;
     }
 
-    public int getQueueId() {
-        return queueId;
+    public UUID getUuid() {
+        return uuid;
     }
 
-    public void setQueueId(int queueId) {
-        this.queueId = queueId;
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 }

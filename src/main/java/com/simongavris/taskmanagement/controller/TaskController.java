@@ -3,6 +3,8 @@ package com.simongavris.taskmanagement.controller;
 import com.simongavris.taskmanagement.model.Task;
 import com.simongavris.taskmanagement.model.TaskQueue;
 import com.simongavris.taskmanagement.model.dto.TaskDto;
+import com.simongavris.taskmanagement.util.Priority;
+import com.simongavris.taskmanagement.util.Status;
 import com.simongavris.taskmanagement.util.TaskNotFoundException;
 import com.simongavris.taskmanagement.persistence.TaskRepository;
 
@@ -37,47 +39,60 @@ public class TaskController {
         return tasks.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
+
     //fetch a single task
-    @GetMapping("/tasks/{id}")
-    public TaskDto getTaskById(@PathVariable(value = "id") UUID  id){
-        return convertToDto(taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id)));
+    @GetMapping("tasks/{uuid}")
+    public TaskDto getTaskByUuid(@PathVariable(value ="uuid") UUID uuid){
+        return convertToDto(taskRepository.findByUuid(uuid).orElseThrow(() -> new TaskNotFoundException(uuid)));
     }
+
 
     //create a single task
     @PostMapping("/tasks")
     @ResponseStatus(HttpStatus.CREATED)
     public TaskDto createTask(@Valid @RequestBody TaskDto taskDto){
+
+        //Set default values
+        if(taskDto.getPriority() == null)
+            taskDto.setPriority(Priority.MEDIUM);
+        if(taskDto.getStatus() == null)
+            taskDto.setStatus(Status.OPEN);
+        taskDto.setUuid(UUID.randomUUID());
+
+
         return convertToDto(taskRepository.save(convertToEntity(taskDto)));
     }
 
-    //update a single task
-    @PutMapping("/tasks/{id}")
-    public TaskDto updateTask(@PathVariable(value = "id") UUID id, @Valid @RequestBody TaskDto taskDto){
-        Task updatedTask = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
 
+    //update a single task
+    @PutMapping("/tasks/{uuid}")
+    public TaskDto updateTask(@PathVariable(value = "uuid") UUID uuid, @Valid @RequestBody TaskDto taskDto){
+        Task t = taskRepository.findByUuid(uuid).orElseThrow(() -> new TaskNotFoundException(uuid));
+
+        //dont override values if not wanted
         if(taskDto.getTitle() != null)
-            updatedTask.setTitle(taskDto.getTitle());
+            t.setTitle(taskDto.getTitle());
         if(taskDto.getDescription() != null)
-            updatedTask.setDescription(taskDto.getDescription());
+            t.setDescription(taskDto.getDescription());
         if(taskDto.getPriority() != null)
-            updatedTask.setPriority(taskDto.getPriority());
+            t.setPriority(taskDto.getPriority());
         if(taskDto.getStatus() != null)
-            updatedTask.setStatus(taskDto.getStatus());
-         return convertToDto(taskRepository.save(updatedTask));
+            t.setStatus(taskDto.getStatus());
+         return convertToDto(taskRepository.save(t));
     }
 
     //delete a single task
-    @DeleteMapping("/tasks/{id}")
-    public ResponseEntity<?> deleteTask(@PathVariable(value = "id") UUID id){
-        Task t = taskRepository.findById(id).orElseThrow(()-> new TaskNotFoundException(id));
-        TaskQueue.getInstance().remove(t.getId());
+    @DeleteMapping("/tasks/{uuid}")
+    public ResponseEntity<?> deleteTask(@PathVariable(value = "uuid") UUID uuid){
+        Task t = taskRepository.findByUuid(uuid).orElseThrow(()-> new TaskNotFoundException(uuid));
+        //TaskQueue.getInstance().remove(t.getUuid());
         taskRepository.delete(t);
         return ResponseEntity.ok().build();
     }
 
     public void prepeareQueue(){
         try {
-            TaskQueue.getInstance().addAll(taskRepository.findAll(new Sort(Sort.Direction.ASC, "queueId")));
+            TaskQueue.getInstance().addAll(taskRepository.findAll(new Sort(Sort.Direction.ASC, "id")));
         }catch(NullPointerException e){
             //this means that the database is empty hence no data.
             e.printStackTrace();
