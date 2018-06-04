@@ -11,10 +11,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableScheduling
-public class CraftworkChallangeApplication {
+public class CraftworksChallangeApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CraftworkChallangeApplication.class, args);
+        SpringApplication.run(CraftworksChallangeApplication.class, args);
     }
 
     @Bean
