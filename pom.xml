@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.simongavris</groupId>
-    <artifactId>craftworks-challange</artifactId>
+    <artifactId>craftworks-challenge</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>craftworks-challange</name>
+    <name>craftworks-challenge</name>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -81,7 +81,7 @@
                         <configuration>
                             <classifier>spring-boot</classifier>
                             <mainClass>
-                                com.simongavris.taskmanagement.CraftworksChallangeApplication
+                                com.simongavris.taskmanagement.CraftworksChallengeApplication
                             </mainClass>
                         </configuration>
                     </execution>
