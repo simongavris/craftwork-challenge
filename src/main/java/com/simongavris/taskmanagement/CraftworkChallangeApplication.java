@@ -13,15 +13,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class CraftworkChallangeApplication {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
+        SpringApplication.run(CraftworkChallangeApplication.class, args);
+    }
 
-		SpringApplication.run(CraftworkChallangeApplication.class, args);
-
-
-	}
-
-	@Bean
-	ApplicationRunner dataLoader() {
-		return new DataLoader();
-	}
+    @Bean
+    ApplicationRunner dataLoader() {
+        return new DataLoader();
+    }
 }

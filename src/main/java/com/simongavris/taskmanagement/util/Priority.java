@@ -6,11 +6,13 @@ public enum Priority {
     LOW(1);
 
     private int value;
-    public int getValue(){
-        return value;
-    }
-    Priority(int value){
+
+    Priority(int value) {
         this.value = value;
+    }
+
+    public int getValue() {
+        return value;
     }
 
 }

@@ -14,7 +14,7 @@ import java.util.UUID;
 
 
 @Entity
-@Table(name= "tasks")
+@Table(name = "tasks")
 @EntityListeners(AuditingEntityListener.class)
 public class Task {
     /**
@@ -23,7 +23,7 @@ public class Task {
      * Integer was chosen.
      */
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     /**
@@ -54,7 +54,7 @@ public class Task {
     private String description;
 
 
-    public Task(){
+    public Task() {
         this.uuid = UUID.randomUUID();
     }
 
@@ -87,34 +87,25 @@ public class Task {
         return title;
     }
 
+    /**
+     * Setter of field Title
+     * when new Title is set, updatedAt gets updated.
+     *
+     * @param title
+     */
+    public void setTitle(String title) {
+        this.title = title;
+        this.updatedAt = new Date();
+    }
+
     public Priority getPriority() {
         return priority;
     }
 
-
-    public Status getStatus() {
-        return status;
-    }
-
-
-    public String getDescription() {
-        return description;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-
-
-
-
-
-    //Setter:
-
     /**
      * Setter of field Priority
      * when new priority is chosen, updatedAt gets updated.
+     *
      * @param priority
      */
     public void setPriority(Priority priority) {
@@ -122,16 +113,24 @@ public class Task {
         this.updatedAt = new Date();
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+
+    //Setter:
+
     /**
      * Setter of field Status
      * when new status is chosen, updatedAt gets updated.
      * when status is set to "Done", resolvedAt gets set.
      * when statusu is set from "Done" to something else,
      * resolveAt gets unset (null).
+     *
      * @param status
      */
     public void setStatus(Status status) {
-        if(status != null){
+        if (status != null) {
             if (status.equals(Status.OPEN) && this.resolvedAt != null)
                 this.resolvedAt = null;
             if (status.equals(Status.DONE))
@@ -142,24 +141,23 @@ public class Task {
         }
     }
 
-    /**
-     * Setter of field Title
-     * when new Title is set, updatedAt gets updated.
-     * @param title
-     */
-    public void setTitle(String title) {
-        this.title = title;
-        this.updatedAt = new Date();
+    public String getDescription() {
+        return description;
     }
 
     /**
      * Setter of field Description
      * when new Description is set, updatedAt gets updated.
+     *
      * @param description
      */
     public void setDescription(String description) {
         this.description = description;
         this.updatedAt = new Date();
+    }
+
+    public UUID getUuid() {
+        return uuid;
     }
 
     public String toString() {

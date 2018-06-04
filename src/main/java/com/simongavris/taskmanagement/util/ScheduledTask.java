@@ -22,6 +22,10 @@ public class ScheduledTask {
 
     //random.nextInt(max - min + 1) + min
 
+    /**
+     * Create a random Task and talk about it
+     * Task gets created in a Random interval that is set by the application.properties
+     */
     @Scheduled(fixedDelayString = "${my.random.delay}")
     public void createRandomTask() {
         Task t = new Task("Random-Task-" + dateFormat.format(new Date()), Priority.MEDIUM, Status.OPEN, "This is a randomly created Task");

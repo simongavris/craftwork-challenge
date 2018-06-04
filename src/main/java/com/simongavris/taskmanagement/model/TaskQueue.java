@@ -24,6 +24,7 @@ public class TaskQueue extends LinkedList<Task> {
 
     /**
      * Instantiates an Instance if not happend yet and returns it.
+     *
      * @return {@code INSTANCE}.
      */
     public static TaskQueue getInstance(List<Task> tasks) {
@@ -37,6 +38,7 @@ public class TaskQueue extends LinkedList<Task> {
 
     /**
      * Searching the Queue for Task with given UUID and removes it using the super method.
+     *
      * @param uuid UUID of task to be removed
      * @return {@code true} if this list contained the specified element
      */

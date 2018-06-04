@@ -2,14 +2,11 @@ package com.simongavris.taskmanagement.model.dto;
 
 import com.simongavris.taskmanagement.util.Priority;
 import com.simongavris.taskmanagement.util.Status;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.Date;
 import java.util.UUID;
 
@@ -33,11 +30,6 @@ public class TaskDto {
     private Status status;
 
     private String description;
-
-
-
-
-
 
 
     public String getTitle() {
