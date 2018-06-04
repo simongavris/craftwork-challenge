@@ -19,7 +19,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-public class TaskController {
+public class ApiController {
 
     @Autowired
     private TaskRepository taskRepository;
